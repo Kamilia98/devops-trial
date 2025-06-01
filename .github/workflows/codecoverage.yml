@@ -8,8 +8,8 @@ env:
   MONGO_PASSWORD: SuperPassword
 
 jobs:
-  test:
-    name: Unit testing
+  coverage:
+    name: Code Coverage
     runs-on: ubuntu-latest
 
     strategy:
