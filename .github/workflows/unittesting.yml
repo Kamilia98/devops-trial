@@ -1,10 +1,12 @@
 name: Run Unit Tests
 
 on: push
+
 env:
   MONGO_URI: mongodb+srv://supercluster.d83jj.mongodb.net/superData
-  ENV MONGO_USERNAME: superuser
-  ENV MONGO_PASSWORD: SuperPassword
+  MONGO_USERNAME: superuser
+  MONGO_PASSWORD: SuperPassword
+
 jobs:
   test:
     name: Unit testing
@@ -27,4 +29,12 @@ jobs:
         run: npm install
 
       - name: Run tests
+        id: test
         run: npm test
+
+      - name: Archive Test Result
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with: 
+          name: Mocha-Test_Result
+          path: test-results.xml
