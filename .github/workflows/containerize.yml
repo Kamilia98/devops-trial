@@ -6,7 +6,6 @@ jobs:
   test:
     name: Unit testing
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x]
@@ -37,7 +36,6 @@ jobs:
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x]
@@ -57,10 +55,10 @@ jobs:
       - name: Run Coverage
         run: npm run coverage
 
-      - name: Archive Test Result
-        if: failure() || success()
+      - name: Archive Coverage Result
+        if: always()
         uses: actions/upload-artifact@v4
-        with: 
+        with:
           name: code-coverage-result
           path: coverage
 
@@ -103,11 +101,14 @@ jobs:
 
           sleep 10  # wait for container to start
 
-          export IP=${docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}} my-image'}
-          echo $IP
-       
+          export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' my-image)
+          echo "Container IP: $IP"
+
           echo "Testing Image URL using wget"
-          wget -q -O -127.0.0.1:3000/live | grep live
+          wget -q -O - http://127.0.0.1:3000/live | grep live
+
+          docker stop my-image
+          docker rm my-image
 
       - name: Push Docker image
         uses: docker/build-push-action@v5
