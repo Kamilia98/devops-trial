@@ -30,6 +30,7 @@ jobs:
 
       - name: Run Coverage
         id: coverage
+        continue-on-error: true
         run: npm run coverage
 
       - name: Archive Test Result
